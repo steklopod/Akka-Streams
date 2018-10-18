@@ -1,13 +1,13 @@
-package ru.stream
+package ru
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.{Flow, Sink, Source}
-
-import scala.concurrent.Await
 import scala.concurrent.duration._
+import scala.concurrent.Await
 
 object Stream extends App {
+
   implicit val actorSystem = ActorSystem()
   import actorSystem.dispatcher
   implicit val flowMaterializer = ActorMaterializer()
@@ -21,9 +21,13 @@ object Stream extends App {
   // Sink
   val output = Sink.foreach[Int](println)
 
-  input.via(normalize).runWith(output).andThen {
-    case _ =>
-      actorSystem.terminate()
-      Await.ready(actorSystem.whenTerminated, 1 minute)
-  }
+  input
+    .via(normalize)
+    .runWith(output)
+    .andThen {
+      case _ =>
+        actorSystem.terminate()
+        Await.ready(actorSystem.whenTerminated, 1 minute)
+    }
+
 }

@@ -7,6 +7,7 @@ val akkaVersion   = "2.5.17"
 val junitJupiter  = "5.2.0"
 val junitPlatform = "1.2.0"
 val slf4j         = "1.8.0-beta2"
+val twitter4j     = "4.0.7"
 
 libraryDependencies ++= Seq(
   "org.slf4j"                 % "slf4j-api"               % slf4j,
@@ -33,7 +34,9 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka"         %% "akka-stream"            % akkaVersion,
   "com.typesafe.akka"         %% "akka-testkit"           % akkaVersion % Test,
   "org.iq80.leveldb"          % "leveldb"                 % "0.10",
-  "org.fusesource.leveldbjni" % "leveldbjni-all"          % "1.8"
+  "org.fusesource.leveldbjni" % "leveldbjni-all"          % "1.8",
+  "org.twitter4j"             % "twitter4j-core"          % twitter4j,
+  "org.twitter4j"             % "twitter4j-stream"        % twitter4j
 )
 
 resolvers ++= Seq(
