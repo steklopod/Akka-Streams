@@ -33,6 +33,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka"         %% "akka-contrib"           % akkaVersion,
   "com.typesafe.akka"         %% "akka-stream"            % akkaVersion,
   "com.typesafe.akka"         %% "akka-testkit"           % akkaVersion % Test,
+  "com.typesafe.akka"         %% "akka-stream-testkit"    % akkaVersion % Test,
   "org.iq80.leveldb"          % "leveldb"                 % "0.10",
   "org.fusesource.leveldbjni" % "leveldbjni-all"          % "1.8",
   "org.twitter4j"             % "twitter4j-core"          % twitter4j,
