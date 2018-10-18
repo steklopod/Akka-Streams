@@ -10,6 +10,7 @@
 ### Содержание
 
 1. [Краткое руководство по потокам](https://github.com/steklopod/Akka-Streams/blob/master/src/main/resources/readmes/streams-quickstart-guide.md)
+2. [Принципы проектирования потоков Akka](https://github.com/steklopod/Akka-Streams/blob/master/src/main/resources/readmes/design-principles-behind-akka-streams.md)
 
 ### Асинхронная обработка с неблокирующим обратным давлением
 Инициатива «Реактивные потоки» примечательна тем, что она направлена ​​на решение одной из наиболее важных, но проблемных 
