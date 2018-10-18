@@ -49,10 +49,10 @@ _Тип источника параметризуется двумя типам�
 source.runForeach(i ⇒ println(i))(materializer)
 ```
 Эта строка дополнит источник функцией пользователя - в этом примере мы печатаем номера в консоли и передаем эту 
-небольшую настройку потока aктору, который его запускает. Эта активация сигнализируется тем, что «run» является 
+небольшую настройку потока aктора, который его запускает. Эта активация сигнализируется тем, что «run» является 
 частью имени метода; есть и другие методы, которые управляют потоками Akka, и все они следуют этому шаблону.
 
-При запуске этого источника в файле `scala.App` вы можете заметить, что он не завершается, потому что `ActorSystem`
+При запуске `StreamHelloSpec` этого источника вы можете заметить, что он не завершается, потому что `ActorSystem`
 никогда не прерывается. К счастью, `runForeach` возвращает `Future[Done]`, которое разрешается, когда поток заканчивается:
 
 ```scala
@@ -70,7 +70,7 @@ implicit val system = ActorSystem("QuickStart")
 implicit val materializer = ActorMaterializer()
 ```
 Существуют и другие способы создания материализатора, например, из `ActorContext` при использовании потоков изнутри 
-акторов. `Materializer` - это фабрика для движков потока, это то, что делает потоки запускаемыми - вам не нужно 
+акторов. `Materializer` - это фабрика для движков потока, то, что делает потоки запускаемыми - вам не нужно 
 беспокоиться ни о каких деталях прямо сейчас, кроме того, что вам нужно для вызова любого из методов запуска в источнике. 
 Материализатор подбирается неявно, если он опущен из аргументов вызова метода запуска, что мы будем делать далее.
 
@@ -106,33 +106,36 @@ import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl._
 
-final case class Author(handle: String)
-
-final case class Hashtag(name: String)
-
-final case class Tweet(author: Author, timestamp: Long, body: String) {
-  def hashtags: Set[Hashtag] = body.split(" ").collect {
-    case t if t.startsWith("#") ⇒ Hashtag(t.replaceAll("[^#\\w]", ""))
-  }.toSet
-}
-
-val akkaTag = Hashtag("#akka")
-
-val tweets: Source[Tweet, NotUsed] = Source(
-  Tweet(Author("rolandkuhn"), System.currentTimeMillis, "#akka rocks!") ::
-    Tweet(Author("patriknw"), System.currentTimeMillis, "#akka !") ::
-    Tweet(Author("bantonsson"), System.currentTimeMillis, "#akka !") ::
-    Tweet(Author("drewhk"), System.currentTimeMillis, "#akka !") ::
-    Tweet(Author("ktosopl"), System.currentTimeMillis, "#akka on the rocks!") ::
-    Tweet(Author("mmartynas"), System.currentTimeMillis, "wow #akka !") ::
-    Tweet(Author("akkateam"), System.currentTimeMillis, "#akka rocks!") ::
-    Tweet(Author("bananaman"), System.currentTimeMillis, "#bananas rock!") ::
-    Tweet(Author("appleman"), System.currentTimeMillis, "#apples rock!") ::
-    Tweet(Author("drama"), System.currentTimeMillis, "we compared #apples to #oranges!") ::
-    Nil)
-
-  implicit val system = ActorSystem("reactive-tweets")
+object HelloTweets extends App {
+  implicit val system       = ActorSystem("reactive-tweets")
   implicit val materializer = ActorMaterializer()
+
+  final case class Author(handle: String)
+  final case class Hashtag(name: String)
+  final case class Tweet(author: Author, timestamp: Long, body: String) {
+    def hashtags: Set[Hashtag] =
+      body
+        .split(" ")
+        .collect {
+          case t if t.startsWith("#") ⇒ Hashtag(t.replaceAll("[^#\\w]", ""))
+        }
+        .toSet
+  }
+
+  val akkaTag = Hashtag("#akka")
+
+  val tweets: Source[Tweet, NotUsed] = Source(
+    Tweet(Author("rolandkuhn"), System.currentTimeMillis, "#akka rocks!") ::
+      Tweet(Author("patriknw"), System.currentTimeMillis, "#akka !") ::
+      Tweet(Author("bantonsson"), System.currentTimeMillis, "#akka !") ::
+      Tweet(Author("drewhk"), System.currentTimeMillis, "#akka !") ::
+      Tweet(Author("ktosopl"), System.currentTimeMillis, "#akka on the rocks!") ::
+      Tweet(Author("mmartynas"), System.currentTimeMillis, "wow #akka !") ::
+      Tweet(Author("akkateam"), System.currentTimeMillis, "#akka rocks!") ::
+      Tweet(Author("bananaman"), System.currentTimeMillis, "#bananas rock!") ::
+      Tweet(Author("appleman"), System.currentTimeMillis, "#apples rock!") ::
+      Tweet(Author("drama"), System.currentTimeMillis, "we compared #apples to #oranges!") ::
+      Nil)
 
   tweets
     .map(_.hashtags)                // Получить все наборы хэштегов ...
@@ -140,6 +143,7 @@ val tweets: Source[Tweet, NotUsed] = Source(
     .mapConcat(identity)            // Сглаживание потока твитов в поток хэштегов
     .map(_.name.toUpperCase)        // Преобразование всех хэштегов в верхний регистр
     .runWith(Sink.foreach(println)) // Прикрепите поток к раковине, который, наконец, распечатает хэштеги
+}
 ```
 
 ### Многоразовые части
