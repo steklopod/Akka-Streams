@@ -5,7 +5,7 @@ import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.{Flow, Sink, Source}
 import twitter4j.Status
 
-object ReactiveTweets extends App {
+object ReactiveTweetsApp extends App {
   implicit val actorSystem = ActorSystem()
   import actorSystem.dispatcher
   implicit val flowMaterializer = ActorMaterializer()

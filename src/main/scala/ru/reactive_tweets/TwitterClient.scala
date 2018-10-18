@@ -20,7 +20,6 @@ object TwitterConfiguration {
 object TwitterClient {
 
   def getInstance: Twitter = {
-
     val cb = new ConfigurationBuilder()
     cb.setDebugEnabled(true)
       .setOAuthConsumerKey(TwitterConfiguration.apiKey)
@@ -32,7 +31,7 @@ object TwitterClient {
     tf.getInstance()
   }
 
-  def retrieveTweets(term: String) = {
+  def retrieveTweets(term: String): Iterator[Status] = {
     val query = new Query(term)
     query.setCount(100)
     getInstance.search(query).getTweets.asScala.iterator
@@ -40,8 +39,8 @@ object TwitterClient {
 }
 
 class TwitterStreamClient(val actorSystem: ActorSystem) {
-  val factory       = new TwitterStreamFactory(new ConfigurationBuilder().build())
-  val twitterStream = factory.getInstance()
+  val factory                      = new TwitterStreamFactory(new ConfigurationBuilder().build())
+  val twitterStream: TwitterStream = factory.getInstance()
 
   def init = {
     twitterStream.setOAuthConsumer(TwitterConfiguration.apiKey, TwitterConfiguration.apiSecret)
@@ -53,17 +52,13 @@ class TwitterStreamClient(val actorSystem: ActorSystem) {
 
   def statusListener = new StatusListener() {
     def onStatus(s: Status) {
-      actorSystem.eventStream.publish(Tweet(Author(s.getUser.getScreenName), s.getText))
+      actorSystem.eventStream
+        .publish(Tweet(Author(s.getUser.getScreenName), s.getText))
     }
-
     def onDeletionNotice(statusDeletionNotice: StatusDeletionNotice) {}
-
     def onTrackLimitationNotice(numberOfLimitedStatuses: Int) {}
-
     def onException(ex: Exception) = ex.printStackTrace()
-
     def onScrubGeo(arg0: Long, arg1: Long) {}
-
     def onStallWarning(warning: StallWarning) {}
   }
 
