@@ -65,9 +65,9 @@ class TwitterStreamQuickstartDocSpec extends AkkaSpec {
         .map(_.author)
 
     trait Example3 {
-      val authors: Source[TwitterStreamQuickstartDocSpec.Author, NotUsed] =
-        tweets
-          .collect { case t if t.hashtags.contains(akkaTag) ⇒ t.author }
+      val authors: Source[TwitterStreamQuickstartDocSpec.Author, NotUsed] = tweets.collect {
+        case t if t.hashtags.contains(akkaTag) ⇒ t.author
+      }
     }
 
     authors.runWith(Sink.foreach(println))
@@ -100,14 +100,13 @@ class TwitterStreamQuickstartDocSpec extends AkkaSpec {
   }
 
   "simple fiddle showcase" in {
-
     tweets
-      .filterNot(_.hashtags.contains(akkaTag))  // Удалить все твиты, содержащие #akka hashtag
-      .map(_.hashtags)                          // Получите все наборы хэштегов ...
-      .reduce(_ ++ _)                           // ... и сводить их к одному набору, удаляя дубликаты во всех твитах
-      .mapConcat(identity)                      // Сгладьте поток твитов в поток хэштегов
-      .map(_.name.toUpperCase)                  // Преобразование всех хэштегов в верхний регистр
-      .runWith(Sink.foreach(println))           // Присоедините поток к раковине, который, наконец, напечатает хэштеги
+      .filterNot(_.hashtags.contains(akkaTag)) // Удалить все твиты, содержащие хэштеги #akka
+      .map(_.hashtags) // Получите все наборы хэштегов ...
+      .reduce(_ ++ _) // ... и сводить их к одному набору, удаляя дубликаты во всех твитах
+      .mapConcat(identity) // Сгладьте поток твитов в поток хэштегов
+      .map(_.name.toUpperCase) // Преобразование всех хэштегов в верхний регистр
+      .runWith(Sink.foreach(println)) // Присоедините поток к стоку, который, наконец, напечатает хэштеги
       .value
   }
 
