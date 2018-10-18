@@ -1,9 +1,8 @@
 package ru.hello
-
 import akka.NotUsed
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import akka.stream.scaladsl._
+import akka.stream.scaladsl.{Sink, Source}
 
 object HelloTweets extends App {
   implicit val system       = ActorSystem("reactive-tweets")

@@ -1,12 +1,11 @@
-package ru
-
-import akka.{Done, NotUsed}
+package ru.hello
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.{Flow, Sink, Source}
+import akka.{Done, NotUsed}
 
-import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
+import scala.concurrent.duration._
 
 object HelloStreamApp extends App {
 
